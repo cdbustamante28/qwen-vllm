@@ -14,10 +14,7 @@ ENV HF_HOME=/models/huggingface \
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=10 \
-  CMD python3 - <<'PY' || exit 1
-import urllib.request
-urllib.request.urlopen('http://127.0.0.1:8000/v1/models', timeout=5).read()
-PY
+  CMD python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/v1/models', timeout=5).read()" || exit 1
 
 CMD python3 -m vllm.entrypoints.openai.api_server \
   --host ${VLLM_HOST} \
